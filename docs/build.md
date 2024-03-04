@@ -126,19 +126,23 @@ Make sure to be member of the group `openhantek`, e.g.:
 ----
 
 ### [macOS](#macos)
-Building should work on a recent macOS 11 version.
+Building should work on macOS 13 on Apple Silicon.
 
-We recommend homebrew to install the required libraries.
+We recommend homebrew to install the required libraries. From the root directory of the `openhantek` repo:
 
     git submodule update --init --recursive
     brew update
     brew install libusb fftw qt5 cmake binutils create-dmg
-    # the next two commands (hack from @warpme) fix #314
-    mkdir -p /usr/local/opt/qt5/lib/libgcc_s.1.1.dylib.framework
-    ln -sf /usr/local/opt/gcc/lib/gcc/11/libgcc_s.1.1.dylib \
-      /usr/local/opt/qt5/lib/libgcc_s.1.1.dylib.framework/libgcc_s.1.1.dylib
+    # the next two commands (hack from @warpme, updated for macOS 13) fix #314
+    sudo mkdir -p /opt/homebrew/opt/qt@5/lib/libgcc_s.1.1.dylib.framework
+    sudo ln -sf /opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current/libgcc_s.1.1.dylib \
+         /opt/homebrew/opt/qt@5/lib/libgcc_s.1.1.dylib.framework/libgcc_s.1.1.dylib
 
-If you want to build an OSX bundle make sure the option in `openhantek/CMakeLists.txt` is set accordingly:
+Add the path to the Qt installation in `CMakeLists.txt`:
+
+    list(APPEND CMAKE_PREFIX_PATH "/opt/homebrew/opt/qt@5/")
+
+If you want to build an OSX bundle make sure the option in `CMakeLists.txt` is set accordingly:
 
     option(BUILD_MACOSX_BUNDLE "Build MacOS app bundle" ON)
 
